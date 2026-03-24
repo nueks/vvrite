@@ -22,6 +22,8 @@ _TEST_KEYS = [
     "custom_words",
     "auto_update_check",
     "last_update_check",
+    "ui_language",
+    "asr_language",
 ]
 _LEGACY_DOMAINS = ["com.vvrite.app", "python3", "python", "Python"]
 
@@ -222,6 +224,35 @@ class TestPreferences(unittest.TestCase):
         prefs = Preferences()
         prefs.stop_volume = 0.3
         self.assertAlmostEqual(prefs.stop_volume, 0.3)
+
+    def test_default_ui_language_is_none(self):
+        from vvrite.preferences import Preferences
+        prefs = Preferences()
+        self.assertIsNone(prefs.ui_language)
+
+    def test_set_ui_language(self):
+        from vvrite.preferences import Preferences
+        prefs = Preferences()
+        prefs.ui_language = "ko"
+        self.assertEqual(prefs.ui_language, "ko")
+
+    def test_set_ui_language_to_none(self):
+        from vvrite.preferences import Preferences
+        prefs = Preferences()
+        prefs.ui_language = "ko"
+        prefs.ui_language = None
+        self.assertIsNone(prefs.ui_language)
+
+    def test_default_asr_language(self):
+        from vvrite.preferences import Preferences
+        prefs = Preferences()
+        self.assertEqual(prefs.asr_language, "auto")
+
+    def test_set_asr_language(self):
+        from vvrite.preferences import Preferences
+        prefs = Preferences()
+        prefs.asr_language = "ko"
+        self.assertEqual(prefs.asr_language, "ko")
 
 
 if __name__ == "__main__":

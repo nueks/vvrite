@@ -30,9 +30,10 @@ _DEFAULTS = {
     "custom_words": "",
     "auto_update_check": True,
     "last_update_check": 0.0,
+    "asr_language": "auto",
 }
 
-_PREFERENCE_KEYS = tuple(_DEFAULTS.keys()) + ("mic_device",)
+_PREFERENCE_KEYS = tuple(_DEFAULTS.keys()) + ("mic_device", "ui_language")
 
 # Hard-coded constants (not user-configurable)
 SAMPLE_RATE = 16000
@@ -244,3 +245,22 @@ class Preferences:
     @last_update_check.setter
     def last_update_check(self, value: float):
         self._set("last_update_check", value)
+
+    @property
+    def ui_language(self) -> str | None:
+        val = self._defaults.objectForKey_("ui_language")
+        if val is None:
+            return None
+        return str(val)
+
+    @ui_language.setter
+    def ui_language(self, value: str | None):
+        self._set("ui_language", value)
+
+    @property
+    def asr_language(self) -> str:
+        return str(self._get("asr_language"))
+
+    @asr_language.setter
+    def asr_language(self, value: str):
+        self._set("asr_language", value)
