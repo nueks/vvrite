@@ -48,9 +48,12 @@ Each row contains:
 - **Auto-preview on mouse-up:** When the user releases the slider, play the current sound at the new volume. No preview during drag (avoids rapid repeated playback).
 - Volume percentage label updates in real-time during drag.
 
-### Debounce
+### Slider Wiring
 
-The slider's action fires on mouse-up only (non-continuous action for playback trigger). The volume label updates via a separate continuous binding. This avoids needing a debounce timer — AppKit handles it natively by setting the slider to continuous for visual feedback but using the action target only on mouse-up via `sendActionOn_`.
+Two concerns — live label update and sound preview — require separate mechanisms:
+
+1. **Live label update:** The slider is set to continuous (`setContinuous_(True)`) so its action fires during drag. The action handler updates the percentage label and saves the preference on every change.
+2. **Sound preview on mouse-up only:** Use `slider.cell().sendActionOn_(NSLeftMouseUpMask)` to restrict when a *second* target/action fires. However, since NSSlider only supports one target/action pair, the simpler approach is: the action handler always updates the label and saves the preference, but only plays sound when the mouse is up. Detect this by checking `NSApp.currentEvent().type() == NSEventTypeLeftMouseUp` inside the action handler. If the event is a mouse-up, play the preview; otherwise, just update the label.
 
 ## Data Model
 
@@ -65,7 +68,7 @@ Existing `sound_start` and `sound_stop` string properties are reused. System sou
 
 ### Distinguishing System vs Custom
 
-A value is a custom file path if it contains a `/` character. Otherwise it's a system sound name.
+A value is a custom file path if it contains a `/` character. Otherwise it's a system sound name. This logic lives in `sounds.is_custom_path()` — a single source of truth used by both `sounds.py` and `settings.py`.
 
 ## Implementation
 
@@ -86,8 +89,15 @@ def play(name: str, volume: float = 1.0):
 
 Logic:
 1. If `name` contains `/`, treat as file path: `NSSound.alloc().initWithContentsOfFile_byReference_(name, True)`
-2. Otherwise, use `NSSound.soundNamed_(name)` (system sound)
+2. Otherwise, use `NSSound.soundNamed_(name)` (system sound) — **must call `.copy()` on the result** to avoid mutating the shared cached instance
 3. Set `sound.setVolume_(volume)` before `sound.play()`
+
+Helper function:
+```python
+def is_custom_path(name: str) -> bool:
+    return "/" in name
+```
+This centralizes the system-vs-custom heuristic so it isn't re-implemented in `sounds.py` and `settings.py` independently.
 
 Also add:
 ```python
@@ -101,6 +111,8 @@ Add two new properties with defaults in `_DEFAULTS`:
 - `start_volume`: 1.0
 - `stop_volume`: 1.0
 
+Note: `_PREFERENCE_KEYS` is derived from `_DEFAULTS.keys()`, so adding keys to `_DEFAULTS` automatically includes them in legacy migration. No manual update to `_PREFERENCE_KEYS` is needed.
+
 ### settings.py Changes
 
 Add Sound section UI between Custom Words and Permissions. New instance variables:
@@ -112,8 +124,10 @@ Window height increases from 586 to ~680 to accommodate the new section.
 
 Action handlers:
 - `startSoundChanged:` / `stopSoundChanged:` — save preference, play preview
-- `startVolumeChanged:` / `stopVolumeChanged:` — save preference, update label, play preview
+- `startVolumeChanged:` / `stopVolumeChanged:` — save preference, update label, play preview on mouse-up only
 - `_open_custom_sound_panel(for_start: bool)` — NSOpenPanel for custom file
+
+`showWindow_` must call `_populate_sounds()` (similar to the existing `_populate_mics()` pattern) to refresh sound dropdowns each time the window opens. This handles custom files that were deleted/moved since last open.
 
 ### main.py Changes
 
