@@ -14,6 +14,10 @@
   <img src="https://img.shields.io/badge/runtime-MLX-orange" alt="MLX">
 </p>
 
+<p align="center">
+  <a href="README.ko.md">한국어</a> · <a href="README.ja.md">日本語</a> · <a href="README.zh-Hans.md">简体中文</a> · <a href="README.zh-Hant.md">繁體中文</a> · <a href="README.es.md">Español</a> · <a href="README.fr.md">Français</a> · <a href="README.de.md">Deutsch</a>
+</p>
+
 ---
 
 ## How It Works
@@ -24,16 +28,24 @@
 4. Your speech is transcribed locally and pasted into the active text field
 
 Everything runs on-device using [MLX](https://github.com/ml-explore/mlx). No audio leaves your Mac.
+The default model also brings strong multilingual ASR support, so supported languages such as Korean, English, Japanese, Chinese, Cantonese, French, German, and Spanish work out of the box.
 
 ## Features
 
 - **On-device transcription** — Qwen3-ASR running via mlx-audio, no cloud API needed
+- **Multilingual-ready** — the default Qwen3-ASR model supports language identification and transcription across 30 languages and 22 Chinese dialects, and vvrite does not lock transcription to a single language
 - **Global hotkey** — trigger from any app, configurable in Settings
 - **Menu bar app** — lives quietly in your status bar
 - **Recording overlay** — visual feedback with audio level bars and timer
 - **ESC to cancel** — press Escape during recording to dismiss without transcribing
 - **Auto-paste** — transcribed text is pasted directly into the active field
 - **Guided onboarding** — first launch walks you through permissions and model download
+
+## Language Support
+
+vvrite uses [`mlx-community/Qwen3-ASR-1.7B-8bit`](https://huggingface.co/mlx-community/Qwen3-ASR-1.7B-8bit), which is an MLX conversion of [`Qwen/Qwen3-ASR-1.7B`](https://huggingface.co/Qwen/Qwen3-ASR-1.7B). According to the official Qwen model card, Qwen3-ASR-1.7B supports language identification and speech recognition for 30 languages and 22 Chinese dialects.
+
+That includes Korean, English, Japanese, Chinese, Cantonese, Arabic, German, French, Spanish, Portuguese, Indonesian, Italian, Russian, Thai, Vietnamese, Turkish, Hindi, Malay, Dutch, Swedish, Danish, Finnish, Polish, Czech, Filipino, Persian, Greek, Hungarian, Macedonian, and Romanian, plus regional Chinese dialect support. Because vvrite uses that checkpoint directly through mlx-audio and does not force a fixed recognition language, multilingual dictation works well for the model's supported languages.
 
 ## Requirements
 
