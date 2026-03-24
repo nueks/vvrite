@@ -17,16 +17,21 @@ class TestSupportedLanguages(unittest.TestCase):
             self.assertIsInstance(code, str)
             self.assertIsInstance(name, str)
 
+    def test_supported_languages_exact_codes(self):
+        from vvrite.locales import SUPPORTED_LANGUAGES
+        codes = {code for code, _ in SUPPORTED_LANGUAGES}
+        required = {"en","ko","ja","zh-Hans","zh-Hant","es","fr","de","pt","ru","ar","hi","tr","it"}
+        self.assertEqual(codes, required)
+
     def test_asr_language_map_covers_all_supported(self):
         from vvrite.locales import SUPPORTED_LANGUAGES, ASR_LANGUAGE_MAP
 
         codes = {code for code, _ in SUPPORTED_LANGUAGES}
         for code in codes:
-            base = code.split("-")[0]
             self.assertIn(
-                base,
+                code,
                 ASR_LANGUAGE_MAP,
-                f"ASR_LANGUAGE_MAP missing entry for base code '{base}' (from '{code}')",
+                f"ASR_LANGUAGE_MAP missing entry for code '{code}'",
             )
 
 

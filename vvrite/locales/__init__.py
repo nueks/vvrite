@@ -8,35 +8,36 @@ from Foundation import NSLocale
 SUPPORTED_LANGUAGES = [
     ("en", "English"),
     ("ko", "\ud55c\uad6d\uc5b4"),
+    ("ja", "\u65e5\u672c\u8a9e"),
     ("zh-Hans", "\u7b80\u4f53\u4e2d\u6587"),
     ("zh-Hant", "\u7e41\u9ad4\u4e2d\u6587"),
-    ("ja", "\u65e5\u672c\u8a9e"),
+    ("es", "Espa\u00f1ol"),
     ("fr", "Fran\u00e7ais"),
     ("de", "Deutsch"),
-    ("es", "Espa\u00f1ol"),
     ("pt", "Portugu\u00eas"),
     ("ru", "\u0420\u0443\u0441\u0441\u043a\u0438\u0439"),
+    ("ar", "\u0627\u0644\u0639\u0631\u0628\u064a\u0629"),
+    ("hi", "\u0939\u093f\u0928\u094d\u0926\u0940"),
+    ("tr", "T\u00fcrk\u00e7e"),
     ("it", "Italiano"),
-    ("nl", "Nederlands"),
-    ("vi", "Ti\u1ebfng Vi\u1ec7t"),
-    ("th", "\u0e44\u0e17\u0e22"),
 ]
 
 # Map locale base codes to ASR language names used by the model
 ASR_LANGUAGE_MAP = {
     "en": "English",
     "ko": "Korean",
-    "zh": "Chinese",
     "ja": "Japanese",
+    "zh-Hans": "Chinese",
+    "zh-Hant": "Chinese",
+    "es": "Spanish",
     "fr": "French",
     "de": "German",
-    "es": "Spanish",
     "pt": "Portuguese",
     "ru": "Russian",
+    "ar": "Arabic",
+    "hi": "Hindi",
+    "tr": "Turkish",
     "it": "Italian",
-    "nl": "Dutch",
-    "vi": "Vietnamese",
-    "th": "Thai",
 }
 
 _SUPPORTED_CODES = {code for code, _ in SUPPORTED_LANGUAGES}
